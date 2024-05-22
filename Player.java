@@ -32,7 +32,5 @@ public class Player {
 		score++;    //Increase the score 
 	}
 	
-	
-	//To String
 
 }
