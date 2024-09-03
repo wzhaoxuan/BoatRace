@@ -1,20 +1,22 @@
-//Put in all the index, # and C
+package Boat_Race;
+
 public class River {
-	private Tile[]track;  //Store the track in an Array 
+	private Tile[] track;
+	
 	public River(int length) {   //Give river the length 
 		track = new Tile[length];   
 		
-		for(int i=0; i <length; i++) {
-			track[i] = new Tile();
+		for(int i = 0; i <length; i++) {
+			track[i] = new Tile('_');
 		}
 	}
 	
 	public void addTrap(int index, int strength) {   //Add trap
-		track[index].setTrap(new Traps(strength));
+		track[index] = new Traps('#',strength);
 	}
 	
 	public void addCurrent(int index, int strength) {  //Add current 
-		track[index].setCurrent(new Current(strength));
+		track[index] = new Current('C',strength);
 		
 	}
 	
@@ -23,47 +25,19 @@ public class River {
 		return track[index];
 	}
 	
-	class Tile{
-		private Current current;
-		private Traps trap;
-		
-		public Tile() {
-			current = null;
-			trap = null;
-		}
-		
-		public Current getCurrent() {
-			return current;
-		}
-		
-		public void setCurrent(Current current) {
-			this.current = current;
-		}
-		
-		public Traps getTrap() {
-			return trap;
-		}
-		
-		public void setTrap (Traps trap) {
-			this.trap = trap;
-		}
-		
-	}
-	
 	public void displayRiver() {
 		 for (Tile tile : track) {
-		        Current current = tile.getCurrent();
-		        Traps trap = tile.getTrap();
-		        
-		        if (current != null) {
-		            System.out.print("C" + current.getStrength() + " ");
-		        } else if (trap != null) {
+		        if (tile instanceof Current) {
+		        	Current current = (Current) tile;
+		            System.out.print( "C" + current.getStrength() + " ");
+		        } else if (tile instanceof Traps) {
+		        	Traps trap = (Traps) tile;
 		            System.out.print("#" + trap.getStrength() + " ");
 		        } else {
-		            System.out.print("_");
+		            System.out.print(tile.getSymbol() + " ");
 		        }
 		    }
 		    System.out.println();
-		    
+	
 	}
 }
