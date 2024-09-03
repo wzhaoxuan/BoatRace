@@ -1,23 +1,28 @@
-//How the game works, 
-//Eg: put in how many steps.... 
+package Boat_Race;
 
 import java.util.*;
+import java.io.*;
 
 public class Game {
-
 	private Player[]players;    //Array to store player
 	private Boat[]boats;    //Array to store boat
 	private River river;    
 	private Random random;   //generate random number 
+	private ScoreRecord score;
+
 	
 	public Game() {
 		players = new Player[2];  //2 elements in this array --> 2
 		boats = new Boat[2];   //2 boats 
 		random = new Random();
-		
+
+
 		initializeRiver();   //Call method to initialize the river below 
+		score = new ScoreRecord();
 	}
 	
+	
+	// Set river
 	private void initializeRiver() {
 		river = new River(100);  
 		
@@ -36,27 +41,28 @@ public class Game {
 			int index;
 			do{
 				index = random.nextInt(100);
-			}while (duplicatedIndexes.contains(index));   //Give a new index if already used
+			} while (duplicatedIndexes.contains(index));   //Give a new index if already used
 			 int strength = random.nextInt(10) + 1; 
 			river.addCurrent(index, strength);
 		}
 		
 	}
 	
-	
+	//Create a dice 
 	private int Dice() {
 		return random.nextInt(6) + 1;
 	}
 	
 	
+	
 	//Enter player name and store them 
 	public void play() {
 		Scanner input = new Scanner(System.in);
-		System.out.println("Enter player 1 name");
+		System.out.print("Enter player 1 name: ");
 		String name1 = input.next();
 		players[0] = new Player(name1);
 		
-		System.out.println("Enter player 2 name");
+		System.out.print("Enter player 2 name: ");
 		String name2 = input.next();
 		players[1] = new Player(name2);
 		
@@ -67,12 +73,10 @@ public class Game {
 		
 		int currentPlayerIndex = 0;
 		
-		
-		
 		//Display the river 
-		System.out.println("\nThe river is displayed as below");
+		System.out.println("\nRIVER DISPLAY: ");
 		river.displayRiver();
-		System.out.println("THE GAME STARTS NOW!!!🤩");
+		System.out.println("\n--GAME STARTS--");
 		
 		
 		
@@ -82,53 +86,58 @@ public class Game {
 			Boat currentBoat = boats[currentPlayerIndex];
 			
 			
-			System.out.println("It's " + currentPlayer.getName() + "'s turn.\nPress enter to roll the dice");
+			System.out.println(currentPlayer.getName() + "'s turns.\nPress enter to roll the dice");
 			input.nextLine();
 			
-			int steps = Dice();
-			System.out.println(currentPlayer.getName() + " rolled a " + steps);
-			
-			currentBoat.move(steps);
 
 			int currentPosition = currentBoat.getPosition();
-			River.Tile tile = river.getTile(currentPosition);
-			Current current = tile.getCurrent();
-		    Traps trap = tile.getTrap();
+			Tile tile = river.getTile(currentPosition);
+
+			
+			currentPlayer.incrementTurn();	 
 			
 			
-		    
-		    
+			int steps = Dice();
+			System.out.println("Player: " + currentPlayer.getName());
+			System.out.println("Rolled: " + steps);
+			currentBoat.move(steps);
+			
+			
 		    //Hitting traps or Current 
-			if (trap != null) { // Check if trap object is present
-		        System.out.println("Opps " + currentPlayer.getName() + " hit a trap.\nMove backwards " + trap.getStrength() + "steps");
+			if (tile instanceof Traps) { // Check if trap object is present
+				Traps trap = (Traps) tile;
+		        System.out.println("##Opps, " + currentPlayer.getName() + " hits a trap.\nMove backwards " + trap.getStrength() + " steps");
 		        currentBoat.move(-trap.getStrength());
-		    } else if (current != null) { // Check if current object is present
-		        System.out.println("Yay! " + currentPlayer.getName() + " met a current.\nMove forward " + current.getStrength() + "steps");
+		    } else if (tile instanceof Current) { // Check if current object is present
+		    	Current current = (Current) tile;
+		        System.out.println("Yay! " + currentPlayer.getName() + " mets a current.\nMove forward " + current.getStrength() + "steps");
 		        currentBoat.move(current.getStrength());
 		    }
 			
+			System.out.println("Position: " + currentBoat.getPosition());
+			System.out.println("Total turns: " + currentPlayer.getTurn() + "\n");
 			
 			
-			//Display score , player and position in the game 
-			currentPlayer.incrementScore();
-			
-			System.out.println("Player: " + currentPlayer.getName());
-			System.out.println("Score: " + currentPlayer.getScore());
-			System.out.println("Position: " + currentBoat.getPosition() + "\n");
-			
-			if (currentPosition >=99) {
-				System.out.println(currentPlayer.getName()+ " arrive at the Goal!" );
-				System.out.println(currentPlayer.getName()+ " is the Winner!\n GAME OVER 😁" );
+			/*While player's boat have exceeded 100th position, the palyer will be the winner.
+			 *Player's turn will be store in the text file if his/her turn is lesser than players
+			 *in top 5 list.
+			 */ 
+			if (currentPosition >= 99) {
+				System.out.println(currentPlayer.getName() + " arrive at the Goal!" );
+				System.out.println(currentPlayer.getName() + " is the Winner!\nGAME OVER 😁" );
+				
+				score.updateScores(currentPlayer.getTurn(),currentPlayer.getName());
+				score.displayScores();
 				break;
 			}
 			
-			currentPlayerIndex = (currentPlayerIndex + 1)%2;
+			currentPlayerIndex = (currentPlayerIndex + 1) % 2;
 			
 		}
-		
+
 		input.close();
-		
-		
+
 	}
+	
 
 }
