@@ -1,36 +1,30 @@
-//Player's detail 
-/*Name
- * Score
- * Increment score
- * **/
+package Boat_Race;
 
 public class Player {
-	
 	//attribute
 	private String name;  //Store player name 
-	private int score;  //Store player score
-	
+	private int turn;  //Store player score
+		
 	//constructor
 	public Player(String name) { 
 		this.name = name;  //initialize player with a name & set score to 0
-		this.score = 0;
+		this.turn = 0;
+			
+		}
 		
-	}
-	
 	//setter getter
 	public String getName() {
 		return name;  
 	}
-	
-	public int getScore() {
-		return score;
+		
+	public int getTurn() {
+		return turn;
 	}
-	
-	
+		
+		
 	//other methods
-	public void incrementScore () {
-		score++;    //Increase the score 
-	}
-	
+	public void incrementTurn () {
+		turn++;    //Increase the score 
+	}	
 
 }
