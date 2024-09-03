@@ -8,8 +8,9 @@
 
 
 
-public class Boat {
+package Boat_Race;
 
+public class Boat {
 	private int position;    //store boat position
 	private int boundary;     //store boundary of the river 
 	
@@ -34,6 +35,9 @@ public class Boat {
 	}
 	
 	
-	
-	
+	@Override
+	public String toString() {
+		return String.format("Boat position: ", position);
+	}
+
 }
